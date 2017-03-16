@@ -1,0 +1,82 @@
+[33mStarting interleaved file read test...
+
+[0m[36m1[0m	|Here are two poems from a reddit user /u/poem_for_your_sprog.[36m$
+[0m[36m2[0m	|They describe the life of a little boy named Timmy.
+[36m$
+[0m[36m3[0m	|
+[36m$
+[0m[36m4[0m	|=========== Poem A ===========
+[36m$
+[0m[36m5[0m	|=========== Poem B ===========
+[36m$
+[0m[36m6[0m	|============ DONE ====="He can't go out! He shan't go out![36m$
+[0m[36m7[0m	|He won't be safe!" she said -
+[36m$
+[0m[36m8[0m	|She sadly sighed and cried with doubt:
+[36m$
+[0m[36m9[0m	|"He'll stay inside instead!
+[36m$
+[0m[36m10[0m	|
+[36m$
+[0m[36m11[0m	|The world's a dark and dreadful
+[36m$
+[0m[36m12[0m	|place For tiny helpless boys -
+[36m$
+[0m[36m13[0m	|We have to make a safer space;[36m$
+[0m[36m14[0m	|A shielded life of joys!"
+[36m$
+[0m[36m15[0m	|
+[36m$
+[0m[36m16[0m	|"There's evil beasts at every bend,
+[36m$
+[0m[36m17[0m	|And danger waits ahead!
+[36m$
+[0m[36m18[0m	|It has to stop. It has to end.
+[36m$
+[0m[36m19[0m	|He can't go out!" she said.
+[36m$
+[0m[36m20[0m	|
+[36m$
+[0m[36m21[0m	|"Oh dearest darling wife of mine," The other whispered, sad:[36m$
+[0m[36m22[0m	|"Just let him go - and he'll be fine," Said Little Timmy's dad.
+[36m$
+[0m[36m23[0m	|
+[36m$
+[0m[36m24[0m	|So Little Timmy's mum agreed, And Timmy went outside.
+[36m$
+[0m[36m25[0m	|But Timmy met one of those kidnapping-rapist-pedo-meth-addicts that are everywhere nowadays.[36m$
+[0m[36m26[0m	|And Timmy fucking died.=======[36m$
+[0m[36m27[0m	|
+[36m$
+[0m[36m28[0m	|And now you know, the tale of little Timmy. 
+[36m$
+[0m[36m29[0m	|What an asshole.When Little Timmy took an 'E'[36m$
+[0m[36m30[0m	|To while away the night:
+[36m$
+[0m[36m31[0m	|'I barely felt a thing,' said he,
+[36m$
+[0m[36m32[0m	|And spoke, 'this can't be right.'
+[36m$
+[0m[36m33[0m	|
+[36m$
+[0m[36m34[0m	|He waited half a second's span -
+[36m$
+[0m[36m35[0m	|A moment more, or two -
+[36m$
+[0m[36m36[0m	|And when, at last, the next began,[36m$
+[0m[36m37[0m	|He wondered what to do.
+[36m$
+[0m[36m38[0m	|
+[36m$
+[0m[36m39[0m	|'Perhaps it takes a few before
+[36m$
+[0m[36m40[0m	|It settles in,' he sighed.
+[36m$
+[0m[36m41[0m	|So Timmy swallowed sixty more.
+[36m$
+[0m[36m42[0m	|
+[36m$
+[0m[31m
+ERROR: Interleaved files test failed! [ test_poems(...); ]
+[0m[33m[ Lines Expected: 45, Lines Read: 42 ]
+[0m
