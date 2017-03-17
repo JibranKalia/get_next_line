@@ -21,6 +21,7 @@ void	test_basic(void)
 	while (get_next_line(fd, &line))
 	{
 		line_count++;
+		printf(ANSI_F_CYAN "%zu" ANSI_RESET "\t|%s" ANSI_F_CYAN "$\n" ANSI_RESET, line_count, line);
 		free(line);
 	}
 	if (line_count != 12)
@@ -34,6 +35,51 @@ void	test_basic(void)
 		printf("Fatal Error: Could not close open file.\n");
 		exit(EXIT_FAILURE);
 	}
+}
+
+int				simple_test(void)
+{
+	char		*line;
+	int			fd;
+	int			ret;
+	int			count_lines;
+	char		*filename;
+	int			errors;
+
+	filename = "gnl7_3.txt";
+	fd = open(filename, O_RDONLY);
+	if (fd > 2)
+	{
+		count_lines = 0;
+		errors = 0;
+		line = NULL;
+		while ((ret = get_next_line(fd, &line)) > 0)
+		{
+			if (count_lines == 0 && strcmp(line, "1234567") != 0)
+				errors++;
+			if (count_lines == 1 && strcmp(line, "abcdefg") != 0)
+				errors++;
+			if (count_lines == 2 && strcmp(line, "4567890") != 0)
+				errors++;
+			if (count_lines == 3 && strcmp(line, "defghijk") != 0)
+				errors++;
+			count_lines++;
+			printf("MAIN %d = %s\n", count_lines, line);
+			free(line);
+			if (count_lines > 50)
+				break ;
+		}
+		close(fd);
+		if (count_lines != 4)
+			printf("-> should have returned '1' four times instead of %d time(s)\n", count_lines);
+		if (errors > 0)
+			printf("-> should have read \"1234567\", \"abcdefg\", \"4567890\" and \"defghijk\"\n");
+		if (count_lines == 4 && errors == 0)
+			printf("OK\n");
+	}
+	else
+		printf("An error occured while opening file %s\n", filename);
+	return (0);
 }
 
 void	test_poems(void)
@@ -102,6 +148,7 @@ void	test_poems(void)
 
 int		main(void)
 {
-	test_basic();
-	test_poems();
+//	test_basic();
+	simple_test();
+	//test_poems();
 }
