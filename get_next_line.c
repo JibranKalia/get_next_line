@@ -70,7 +70,7 @@ int		get_next_line(const int fd, char **line)
 	int				i;
 	static char		*leftover;
 
-	if (!line || fd < 0)
+	if (!line || fd < 0 || !*line)
 		return (-1);
 	i = 0;
 	tmp = NULL;
@@ -79,17 +79,7 @@ int		get_next_line(const int fd, char **line)
 	while (i == 0)
 	{
 		CHK1((tmp = ft_strnew(b_size)) == 0, ft_putstr("Error in Malloc\n"), -1);
-		CHK1((b_read = read(fd, tmp, b_size)) == -1, free(tmp), -1);
-		if (b_read == 0)
-		{
-			if (!leftover)
-				return (0);
-			else
-			{
-				i = ft_strlen(leftover);
-				break;
-			}
-		}
+		CHK1((b_read = read(fd, tmp, b_size)) < 1, free(tmp), b_read);
 		if (leftover)
 		{
 			tmp1 = leftover;

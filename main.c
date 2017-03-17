@@ -21,7 +21,7 @@ void	test_basic(void)
 	while (get_next_line(fd, &line))
 	{
 		line_count++;
-		printf(ANSI_F_CYAN "%zu" ANSI_RESET "\t|%s" ANSI_F_CYAN "$\n" ANSI_RESET, line_count, line);
+//		printf(ANSI_F_CYAN "%zu" ANSI_RESET "\t|%s" ANSI_F_CYAN "$\n" ANSI_RESET, line_count, line);
 		free(line);
 	}
 	if (line_count != 12)
@@ -148,7 +148,7 @@ void	test_poems(void)
 
 int		main(void)
 {
-//	test_basic();
-	simple_test();
+	test_basic();
+//	simple_test();
 	//test_poems();
 }
