@@ -6,13 +6,13 @@
 /*   By: jkalia <jkalia@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/12 19:46:41 by jkalia            #+#    #+#             */
-/*   Updated: 2017/03/16 17:54:57 by jkalia           ###   ########.fr       */
+/*   Updated: 2017/03/17 16:58:59 by jkalia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE
 # define GET_NEXT_LINE
-# define BUFF_SIZE 1
+# define BUFF_SIZE 40
 
 
 #include <fcntl.h>
@@ -30,6 +30,15 @@ typedef	enum	e_bool
 	false,
 	true
 }				t_bool;
+
+/**
+typedef	struct	s_filebuff
+{
+	int			fd;
+	char		*str;
+	size_t		capacity;
+};
+**/
 
 int		get_next_line(const int fd, char **line);
 
