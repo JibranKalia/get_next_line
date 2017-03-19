@@ -6,7 +6,7 @@
 /*   By: jkalia <jkalia@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/12 19:46:18 by jkalia            #+#    #+#             */
-/*   Updated: 2017/03/18 23:08:53 by jkalia           ###   ########.fr       */
+/*   Updated: 2017/03/18 23:25:22 by jkalia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,12 @@ void	nl_trim(char **extra, char **line)
 	len = ft_strlen(tmp);
 	if (len == 0)
 	{
-		free((void *)*extra);
+		free(*extra);
 		*extra = NULL;
 		return ;
 	}
-	ret = ft_strnew(len);
-	ft_strncpy(ret, tmp, len);
-	free((void *)*extra);
+	ret = ft_strndup(tmp, len);
+	free(*extra);
 	*extra = ret;
 }
 
@@ -49,33 +48,22 @@ int		get_next_line(const int fd, char **line)
 	static	char*	extra;
 
 	i = false;
-	if (extra != NULL)
-	{
-		if (ft_strchr(extra, '\n') != NULL)
-			i = true;
-	}
+	if (ft_strchr(extra, '\n') != NULL)
+		i = true;
 	while (i == false)
 	{
 		tmp = ft_strnew(BUFF_SIZE);
 		CHK1((b_read = read(fd, tmp, BUFF_SIZE)) == -1, free(tmp), -1);
 		if (b_read == 0 && !extra)
 			return (0);
-		if (b_read == 0 && ft_strchr(extra, '\n') == NULL)
+		if (b_read == 0)
 		{
-			if (!extra)
-				return (0);
-			else
-			{
-				nl_trim(&extra, line);
-				return (1);
-			}
+			nl_trim(&extra, line);
+			return (1);
 		}
-		if (!extra)
-			extra = ft_strdup(tmp);
-		else
-			extra = ft_strjoin(extra, tmp);
+		extra = (!extra) ? ft_strdup(tmp) : ft_strjoin(extra, tmp);
 		free(tmp);
-		if (ft_strchr(extra, '\n') == NULL && b_read != 0)
+		if (ft_strchr(extra, '\n') == NULL)
 			i = false;
 		else
 			i = true;
