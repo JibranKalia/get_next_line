@@ -6,11 +6,12 @@
 /*   By: jkalia <jkalia@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/12 19:46:18 by jkalia            #+#    #+#             */
-/*   Updated: 2017/03/19 21:04:44 by jkalia           ###   ########.fr       */
+/*   Updated: 2017/03/19 22:01:13 by jkalia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <stdio.h>
 
 int		nl_trim(char **buf, char **line)
 {
@@ -23,7 +24,7 @@ int		nl_trim(char **buf, char **line)
 	i = 0;
 	while (tmp[i] != '\n' && tmp[i])
 		i++;
-	*line = ft_strndup(tmp, i);
+	CHK((*line = ft_strndup(tmp, i)) == 0, -1);
 	tmp += i;
 	(*tmp == '\n') ? tmp++ : tmp;
 	if (!*tmp)
@@ -34,7 +35,7 @@ int		nl_trim(char **buf, char **line)
 		return (1);
 	}
 	len = ft_strlen(tmp);
-	ret = ft_strndup(tmp, len);
+	CHK1((ret = ft_strndup(tmp, len)) == 0, free(*line), -1);
 	free(*buf);
 	*buf = ret;
 	return (0);
@@ -43,7 +44,7 @@ int		nl_trim(char **buf, char **line)
 int		get_next_line(const int fd, char **line)
 {
 	t_bool			i;
-	char			*tmp[2];
+	char			*t[2];
 	int				b_read;
 	static char		*buf[FD_BUFFER_MAX];
 
@@ -52,19 +53,17 @@ int		get_next_line(const int fd, char **line)
 	i = (!ft_strchr(buf[fd], '\n')) ? false : true;
 	while (i == false)
 	{
-		tmp[0] = ft_strnew(BUFF_SIZE);
-		CHK1((b_read = read(fd, tmp[0], BUFF_SIZE)) == -1, free(tmp[0]), -1);
+		CHK((t[0] = ft_strnew(BUFF_SIZE)) == NULL, -1);
+		CHK1((b_read = read(fd, t[0], BUFF_SIZE)) == -1, free(t[0]), -1);
+		CHK2(!(t[1] = (!buf[fd]) ? ft_strdup(t[0]) : ft_strjoin(buf[fd], t[0])),
+				free(buf[fd]), free(t[0]), -1);
+		free(t[0]);
 		if (b_read == 0)
-		{
-			free(tmp[0]);
 			return ((!buf[fd])) ? 0 : nl_trim(&buf[fd], line);
-		}
-		tmp[1] = (!buf[fd]) ? ft_strdup(tmp[0]) : ft_strjoin(buf[fd], tmp[0]);
-		free(tmp[0]);
 		free(buf[fd]);
-		buf[fd] = tmp[1];
+		buf[fd] = t[1];
 		i = (!ft_strchr(buf[fd], '\n')) ? false : true;
 	}
-	nl_trim(&buf[fd], line);
+	CHK(nl_trim(&buf[fd], line) == -1, -1);
 	return (1);
 }

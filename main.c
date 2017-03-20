@@ -22,7 +22,7 @@ void	test_basic(void)
 	}
 	printf("Done.\n");
 	printf("Reading Lines...\n");
-	while (get_next_line(fd, &line) && line_count < 15)
+	while (get_next_line(fd, &line) > 0)
 	{
 		line_count++;
 		printf(ANSI_F_CYAN "%zu" ANSI_RESET "\t|%s" ANSI_F_CYAN "$\n" ANSI_RESET, line_count, line);
@@ -45,7 +45,6 @@ int				simple_test(void)
 {
 	char		*line;
 	int			fd;
-	int			ret;
 	int			count_lines;
 	char		*filename;
 	int			errors;
@@ -57,7 +56,7 @@ int				simple_test(void)
 		count_lines = 0;
 		errors = 0;
 		line = NULL;
-		while ((ret = get_next_line(fd, &line)) > 0)
+		while (get_next_line(fd, &line) > 0)
 		{
 			if (count_lines == 0 && strcmp(line, "1234567") != 0)
 				errors++;
@@ -113,7 +112,7 @@ void	test_poems(void)
 		printf(ANSI_F_CYAN "%zu" ANSI_RESET "\t|%s" ANSI_F_CYAN "$\n" ANSI_RESET, line_count, line);
 		free(line);
 	}
-	while (get_next_line(fd_a, &line))
+	while (get_next_line(fd_a, &line) > 0)
 	{
 		line_count++;
 		printf(ANSI_F_CYAN "%zu" ANSI_RESET "\t|%s" ANSI_F_CYAN "$\n" ANSI_RESET, line_count, line);
@@ -123,13 +122,13 @@ void	test_poems(void)
 	get_next_line(fd_i, &line);
 	printf(ANSI_F_CYAN "%zu" ANSI_RESET "\t|%s" ANSI_F_CYAN "$\n" ANSI_RESET, line_count, line);
 	free(line);
-	while (get_next_line(fd_b, &line))
+	while (get_next_line(fd_b, &line) > 0)
 	{
 		line_count++;
 		printf(ANSI_F_CYAN "%zu" ANSI_RESET "\t|%s" ANSI_F_CYAN "$\n" ANSI_RESET, line_count, line);
 		free(line);
 	}
-	while (get_next_line(fd_i, &line))
+	while (get_next_line(fd_i, &line) > 0)
 	{
 		line_count++;
 		printf(ANSI_F_CYAN "%zu" ANSI_RESET "\t|%s" ANSI_F_CYAN "$\n" ANSI_RESET, line_count, line);
