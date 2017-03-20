@@ -12,9 +12,10 @@
 
 #include "get_next_line.h"
 #include <stdio.h>
-// # include <stdbool.h>
-// # define EXIT_SUCCESS
-// # define EXIT_FAILURE
+#include <stdlib.h>
+# include <stdbool.h>
+# define EXIT_SUCCESS
+# define EXIT_FAILURE
 
 
 // just this whole function is bad
@@ -50,31 +51,38 @@ int		nl_trim(char **buf, char **line)
 	return (0);
 }
 
+int		insert_fd(char **buf, char **extra, size_t size)
+{
+
+}
+
+
+int		assign_line(char **buf, char **line, size_t size)
+{
+	*line = ft_memalloc(size + 1)
+}
+
 int		get_next_line(const int fd, char **line)
 {
-	//bool
-	t_bool			i;
-	//char buf[BUFF_SIZE];
-	char			*t[2];
+	bool			i;
+	char 			buf[BUFF_SIZE];
+	void			*tmp;
 	int				b_read;
-	//call it something else than buf cuz this is not buf, i like storage
-	static char		*buf[FD_BUFFER_MAX];
+	static char		*extra[BUFF_SIZE];
 
-	//what if buff_size == 0?
-	if (fd < 0 || !line)
-		//EXIT_FAILURE
-		return (-1);
-	//memchr()
-	i = (!ft_strchr(buf[fd], '\n')) ? false : true;
-	while (i == false)
+	if (fd < 0 || !line || BUFF_SIZE == 0 || fd > GNL_MAX_FD)
+		exit(EXIT_FAILURE);
+	i = (!ft_memchr(buf[fd], '\n')) ? false : true;
+	while ((b_read = read(fd, buf, BUFF_SIZE)) != 0)
 	{
-		//use static buffer i added above instead of this, why malloc when you don't need to? also memnew()
-		CHK((t[0] = ft_strnew(BUFF_SIZE)) == NULL, -1);
-		//no need to free then
-		CHK1((b_read = read(fd, t[0], BUFF_SIZE)) == -1, free(t[0]), -1);
-		//what the hell is this? also memdup() memjoin()
-		CHK2(!(t[1] = (!buf[fd]) ? ft_strdup(t[0]) : ft_strjoin(buf[fd], t[0])),
-				free(buf[fd]), free(t[0]), -1);
+		CHK(b_read == -1, -1);
+		if (tmp = ft_memchr(buf, '\n', b_read) != 0)
+			assign_line(&buf
+			
+
+	}
+	CHK2(!(t[1] = (!buf[fd]) ? ft_strdup(t[0]) : ft_strjoin(buf[fd], t[0])),
+		free(buf[fd]), free(t[0]), -1);
 		free(t[0]);
 		//this check needs to be done right after the read
 		if (b_read == 0)
