@@ -1,5 +1,9 @@
+
 #include "get_next_line.h"
 #include "ft_ansi.h"
+#include <fcntl.h>
+#include <stdio.h>
+#include <string.h>
 
 void	test_basic(void)
 {
