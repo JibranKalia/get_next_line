@@ -22,7 +22,6 @@ void	test_basic(void)
 	{
 		line_count++;
 		printf(ANSI_F_CYAN "%zu" ANSI_RESET "\t|%s" ANSI_F_CYAN "$\n" ANSI_RESET, line_count, line);
-		printf("Free 3\n");
 		free(line);
 	}
 	if (line_count != 12)
