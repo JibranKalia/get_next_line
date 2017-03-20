@@ -6,13 +6,13 @@
 /*   By: jkalia <jkalia@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/12 19:46:41 by jkalia            #+#    #+#             */
-/*   Updated: 2017/03/18 23:14:22 by jkalia           ###   ########.fr       */
+/*   Updated: 2017/03/19 17:45:18 by jkalia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE
 # define GET_NEXT_LINE
-# define BUFF_SIZE 100
+# define BUFF_SIZE 10
 
 #include <fcntl.h>
 #include <stdio.h>

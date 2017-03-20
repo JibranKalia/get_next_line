@@ -22,6 +22,7 @@ void	test_basic(void)
 	{
 		line_count++;
 		printf(ANSI_F_CYAN "%zu" ANSI_RESET "\t|%s" ANSI_F_CYAN "$\n" ANSI_RESET, line_count, line);
+		printf("Free 3\n");
 		free(line);
 	}
 	if (line_count != 12)
@@ -107,29 +108,29 @@ void	test_poems(void)
 		line_count++;
 		get_next_line(fd_i, &line);
 		printf(ANSI_F_CYAN "%zu" ANSI_RESET "\t|%s" ANSI_F_CYAN "$\n" ANSI_RESET, line_count, line);
-//		free(line);
+		free(line);
 	}
 	while (get_next_line(fd_a, &line))
 	{
 		line_count++;
 		printf(ANSI_F_CYAN "%zu" ANSI_RESET "\t|%s" ANSI_F_CYAN "$\n" ANSI_RESET, line_count, line);
-//		free(line);
+		free(line);
 	}
 	line_count++;
 	get_next_line(fd_i, &line);
 	printf(ANSI_F_CYAN "%zu" ANSI_RESET "\t|%s" ANSI_F_CYAN "$\n" ANSI_RESET, line_count, line);
-//	free(line);
+	free(line);
 	while (get_next_line(fd_b, &line))
 	{
 		line_count++;
 		printf(ANSI_F_CYAN "%zu" ANSI_RESET "\t|%s" ANSI_F_CYAN "$\n" ANSI_RESET, line_count, line);
-//		free(line);
+		free(line);
 	}
 	while (get_next_line(fd_i, &line))
 	{
 		line_count++;
 		printf(ANSI_F_CYAN "%zu" ANSI_RESET "\t|%s" ANSI_F_CYAN "$\n" ANSI_RESET, line_count, line);
-//		free(line);
+		free(line);
 	}
 	if (line_count != 45)
 		printf(ANSI_F_RED "\nERROR: Interleaved files test failed! [ test_poems(...); ]\n" ANSI_RESET);

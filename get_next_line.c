@@ -6,14 +6,14 @@
 /*   By: jkalia <jkalia@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/12 19:46:18 by jkalia            #+#    #+#             */
-/*   Updated: 2017/03/18 23:25:22 by jkalia           ###   ########.fr       */
+/*   Updated: 2017/03/19 17:45:17 by jkalia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include "libft/libft.h"
 
-void	nl_trim(char **extra, char **line)
+int		nl_trim(char **extra, char **line)
 {
 	char	*tmp;
 	size_t	len;
@@ -32,41 +32,37 @@ void	nl_trim(char **extra, char **line)
 	{
 		free(*extra);
 		*extra = NULL;
-		return ;
+		return (1);
 	}
 	ret = ft_strndup(tmp, len);
 	free(*extra);
 	*extra = ret;
+	return (0);
 }
 
 
 int		get_next_line(const int fd, char **line)
 {
 	t_bool			i;
-	char			*tmp;
+	char			*tmp[2];
 	int				b_read;
-	static	char*	extra;
+	static char*	extra;
 
-	i = false;
-	if (ft_strchr(extra, '\n') != NULL)
-		i = true;
+	i = (!ft_strchr(extra, '\n')) ? false : true;
 	while (i == false)
 	{
-		tmp = ft_strnew(BUFF_SIZE);
-		CHK1((b_read = read(fd, tmp, BUFF_SIZE)) == -1, free(tmp), -1);
-		if (b_read == 0 && !extra)
-			return (0);
+		tmp[0] = ft_strnew(BUFF_SIZE);
+		CHK1((b_read = read(fd, tmp[0], BUFF_SIZE)) == -1, free(tmp[0]), -1);
 		if (b_read == 0)
 		{
-			nl_trim(&extra, line);
-			return (1);
+			free(tmp[0]);
+			return ((!extra)) ? 0 : nl_trim(&extra, line);
 		}
-		extra = (!extra) ? ft_strdup(tmp) : ft_strjoin(extra, tmp);
-		free(tmp);
-		if (ft_strchr(extra, '\n') == NULL)
-			i = false;
-		else
-			i = true;
+		tmp[1] = (!extra) ? ft_strdup(tmp[0]) : ft_strjoin(extra, tmp[0]);
+		free(tmp[0]);
+		free(extra);
+		extra = tmp[1];
+		i = (!ft_strchr(extra, '\n')) ? false : true;
 	}
 	nl_trim(&extra, line);
 	return (1);
