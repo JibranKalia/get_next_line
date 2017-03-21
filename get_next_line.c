@@ -6,103 +6,67 @@
 /*   By: jkalia <jkalia@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/12 19:46:18 by jkalia            #+#    #+#             */
-/*   Updated: 2017/03/19 22:01:13 by jkalia           ###   ########.fr       */
+/*   Updated: 2017/03/20 18:10:39 by jkalia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h>
 #include <stdlib.h>
-# include <stdbool.h>
-# define EXIT_SUCCESS
-# define EXIT_FAILURE
+#include <stdio.h>
 
-
-// just this whole function is bad
-//                                 what did read return? how does this function know?
-int		nl_trim(char **buf, char **line)
+void	insert_extra(char *buf, char **extra, size_t size)
 {
-	char	*tmp;
-	size_t	len;
-	size_t	i;
-	char	*ret;
+	size_t	original_len;
 
-	tmp = *buf;
-	i = 0;
-	while (tmp[i] != '\n' && tmp[i])
-		i++;
-	//memdup()
-	CHK((*line = ft_strndup(tmp, i)) == 0, -1);
-	tmp += i;
-	(*tmp == '\n') ? tmp++ : tmp;
-	if (!*tmp)
+	original_len = size;
+	if (!*extra)
 	{
-		free(*buf);
-		*buf = NULL;
-		tmp = NULL;
-		return (1);
+		*extra = ft_strdup(buf);
+		return ;
 	}
-	// memlen???
-	len = ft_strlen(tmp);
-	// memdup()
-	CHK1((ret = ft_strndup(tmp, len)) == 0, free(*line), -1);
-	free(*buf);
-	*buf = ret;
-	return (0);
+	*extra = ft_strjoin(*extra, buf);
 }
 
-int		insert_fd(char **buf, char **extra, size_t size)
+int		assign_line(char **extra, char **line, size_t size)
 {
-
+	if (**extra == '\n')
+		size++;
+	*line = ft_strndup(*extra, size);
+	ft_memmove(*extra, *extra + size + 1, size);
+	return (1);
 }
 
-
-int		assign_line(char **buf, char **line, size_t size)
+int		final_line(char **extra, char **line)
 {
-	*line = ft_memalloc(size + 1)
+	size_t	extra_len;
+
+	printf("Extra2 = %s\n", *extra);
+	extra_len = ft_strlen(*extra);
+	*line = ft_strndup(*extra, extra_len);
+	ft_bzero(*extra, extra_len);
+	return (1);
 }
 
 int		get_next_line(const int fd, char **line)
 {
-	bool			i;
-	char 			buf[BUFF_SIZE];
-	void			*tmp;
+	char 			buf[BUFF_SIZE + 1];
+	char			*tmp;
 	int				b_read;
-	static char		*extra[BUFF_SIZE];
+	static char		*extra[GNL_MAX_FD];
 
 	if (fd < 0 || !line || BUFF_SIZE == 0 || fd > GNL_MAX_FD)
-		exit(EXIT_FAILURE);
-	i = (!ft_memchr(buf[fd], '\n')) ? false : true;
+		return (-1);
 	while ((b_read = read(fd, buf, BUFF_SIZE)) != 0)
 	{
 		CHK(b_read == -1, -1);
-		if (tmp = ft_memchr(buf, '\n', b_read) != 0)
-			assign_line(&buf
-			
-
+		insert_extra(buf, &extra[fd], b_read);
+		if ((tmp = ft_strchr(extra[fd], '\n')) != 0)
+			return (assign_line(&extra[fd], line, tmp - extra[fd]));
 	}
-	CHK2(!(t[1] = (!buf[fd]) ? ft_strdup(t[0]) : ft_strjoin(buf[fd], t[0])),
-		free(buf[fd]), free(t[0]), -1);
-		free(t[0]);
-		//this check needs to be done right after the read
-		if (b_read == 0)
-			//does this function only trim the newline? be careful when naming
-			return ((!buf[fd])) ? 0 : nl_trim(&buf[fd], line);
-		//so much freeing!!!
-		free(buf[fd]);
-		//there are so many more elegant ways to do this
-		buf[fd] = t[1];
-		//WHAT??? also memchr()
-		i = (!ft_strchr(buf[fd], '\n')) ? false : true;
-	}
-	// there is a case here that you are missing
-	CHK(nl_trim(&buf[fd], line) == -1, -1);
-	return (1);
+	if ((tmp = ft_strchr(extra[fd], '\n')) != 0)
+		return (assign_line(&extra[fd], line, tmp - extra[fd]));
+	else if (ft_strlen(extra[fd]))
+		return (final_line(&extra[fd], line));
+	free(extra[fd]);
+	return (0);
 }
-/*
-i feel this is a great example of not planning properly. think about what you want to do.
-how you want to accomplish it, and what that entails. then as you write the code, refer back to these
-two questions. the code is just simply messy. I know that this is against norm, but the next 
-revision, i recommend you comment every line of code or every other line of code. this way you
-are forced to make the code so simple as to be explainable through a few lines of text.
-*/
