@@ -6,95 +6,85 @@
 /*   By: jkalia <jkalia@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/12 19:46:18 by jkalia            #+#    #+#             */
-/*   Updated: 2017/03/19 22:01:13 by jkalia           ###   ########.fr       */
+/*   Updated: 2017/03/20 18:10:39 by jkalia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <stdlib.h>
 #include <stdio.h>
-// # include <stdbool.h>
-// # define EXIT_SUCCESS
-// # define EXIT_FAILURE
 
-
-// just this whole function is bad
-//                                 what did read return? how does this function know?
-int		nl_trim(char **buf, char **line)
+void	insert_extra(char *buf, char **extra, size_t size)
 {
-	char	*tmp;
-	size_t	len;
-	size_t	i;
-	char	*ret;
+	size_t	original_len;
 
-	tmp = *buf;
-	i = 0;
-	while (tmp[i] != '\n' && tmp[i])
-		i++;
-	//memdup()
-	CHK((*line = ft_strndup(tmp, i)) == 0, -1);
-	tmp += i;
-	(*tmp == '\n') ? tmp++ : tmp;
-	if (!*tmp)
+	original_len = size;
+	// try and use ! only for bool statements or comparison statements like !(this || this)
+	// for this use *extra == 0, makes it clearer as to what you want to do.
+	if (!*extra)
 	{
-		free(*buf);
-		*buf = NULL;
-		tmp = NULL;
-		return (1);
+		// no str functions allowed, remember they all stop when they hit a \0
+		*extra = ft_strdup(buf);
+		return ;
 	}
-	// memlen???
-	len = ft_strlen(tmp);
-	// memdup()
-	CHK1((ret = ft_strndup(tmp, len)) == 0, free(*line), -1);
-	free(*buf);
-	*buf = ret;
-	return (0);
+	// str function.
+	*extra = ft_strjoin(*extra, buf);
+}
+
+int		assign_line(char **extra, char **line, size_t size)
+{
+	// what are you doing here? what is this if statement's purpose?
+	if (**extra == '\n')
+		size++;
+	// use of strndup is nice but it will still stop at \0
+	*line = ft_strndup(*extra, size);
+	//                        why plus one?
+	ft_memmove(*extra, *extra + size + 1, size);
+	return (1);
+}
+
+int		final_line(char **extra, char **line)
+{
+	size_t	extra_len;
+
+	printf("Extra2 = %s\n", *extra);
+	extra_len = ft_strlen(*extra);
+	*line = ft_strndup(*extra, extra_len);
+	ft_bzero(*extra, extra_len);
+	return (1);
 }
 
 int		get_next_line(const int fd, char **line)
 {
-	//bool
-	t_bool			i;
-	//char buf[BUFF_SIZE];
-	char			*t[2];
+	char 			buf[BUFF_SIZE + 1];
+	char			*tmp;
+	// does't read return a ssize_t? correct me if i am wrong, implicit typecasts are not good
 	int				b_read;
-	//call it something else than buf cuz this is not buf, i like storage
-	static char		*buf[FD_BUFFER_MAX];
+	static char		*extra[GNL_MAX_FD];
 
-	//what if buff_size == 0?
-	if (fd < 0 || !line)
-		//EXIT_FAILURE
+	if (fd < 0 || !line || BUFF_SIZE == 0 || fd > GNL_MAX_FD)
 		return (-1);
-	//memchr()
-	i = (!ft_strchr(buf[fd], '\n')) ? false : true;
-	while (i == false)
+	while ((b_read = read(fd, buf, BUFF_SIZE)) != 0)
 	{
-		//use static buffer i added above instead of this, why malloc when you don't need to? also memnew()
-		CHK((t[0] = ft_strnew(BUFF_SIZE)) == NULL, -1);
-		//no need to free then
-		CHK1((b_read = read(fd, t[0], BUFF_SIZE)) == -1, free(t[0]), -1);
-		//what the hell is this? also memdup() memjoin()
-		CHK2(!(t[1] = (!buf[fd]) ? ft_strdup(t[0]) : ft_strjoin(buf[fd], t[0])),
-				free(buf[fd]), free(t[0]), -1);
-		free(t[0]);
-		//this check needs to be done right after the read
-		if (b_read == 0)
-			//does this function only trim the newline? be careful when naming
-			return ((!buf[fd])) ? 0 : nl_trim(&buf[fd], line);
-		//so much freeing!!!
-		free(buf[fd]);
-		//there are so many more elegant ways to do this
-		buf[fd] = t[1];
-		//WHAT??? also memchr()
-		i = (!ft_strchr(buf[fd], '\n')) ? false : true;
+		CHK(b_read == -1, -1);
+		insert_extra(buf, &extra[fd], b_read);
+		// str function
+		if ((tmp = ft_strchr(extra[fd], '\n')) != 0)
+			return (assign_line(&extra[fd], line, tmp - extra[fd]));
 	}
-	// there is a case here that you are missing
-	CHK(nl_trim(&buf[fd], line) == -1, -1);
-	return (1);
+	/// str function
+	if ((tmp = ft_strchr(extra[fd], '\n')) != 0)
+		return (assign_line(&extra[fd], line, tmp - extra[fd]));
+	// str function
+	else if (ft_strlen(extra[fd]))
+		return (final_line(&extra[fd], line));
+	free(extra[fd]);
+	return (0);
 }
-/*
-i feel this is a great example of not planning properly. think about what you want to do.
-how you want to accomplish it, and what that entails. then as you write the code, refer back to these
-two questions. the code is just simply messy. I know that this is against norm, but the next 
-revision, i recommend you comment every line of code or every other line of code. this way you
-are forced to make the code so simple as to be explainable through a few lines of text.
-*/
+// so by now you should have realized that you can't only use mem functions.
+// why? because this function will be called multiple times, and the only information
+// that will remain through the calls is the static var, you static var does not hold
+// the current size of the array. so, that is an issue. so, pretty hard to fix this without
+// a struct. so for now simply try to make sure that you handle nulls everywhere that you can
+// and if a null ends up between calls. that's ok.
+// finally, much cleaner code, definitely easier to read and better designed. good job.
