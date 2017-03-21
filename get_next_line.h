@@ -6,7 +6,7 @@
 /*   By: jkalia <jkalia@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/12 19:46:41 by jkalia            #+#    #+#             */
-/*   Updated: 2017/03/20 15:56:43 by jkalia           ###   ########.fr       */
+/*   Updated: 2017/03/21 16:47:11 by jkalia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@
 # include <sys/uio.h>
 # include <unistd.h>
 # include <stdlib.h>
-# include "libft/libft.h"
+# include <libft.h>
 
-# define BUFF_SIZE 5
+# define BUFF_SIZE 1
 # define GNL_MAX_FD 4864
 
 typedef	enum	e_bool
