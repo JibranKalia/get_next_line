@@ -6,7 +6,7 @@
 /*   By: jkalia <jkalia@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/12 19:46:18 by jkalia            #+#    #+#             */
-/*   Updated: 2017/03/21 18:32:35 by jkalia           ###   ########.fr       */
+/*   Updated: 2017/03/22 12:58:25 by jkalia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,6 @@ int		final_line(char **extra, char **line)
 	extra_len = ft_strlen(*extra);
 	*line = ft_strdup(*extra);
 	ft_bzero(*extra, extra_len);
-//	free(*extra);
-//	*extra = NULL;
 	return (1);
 }
 
@@ -71,11 +69,12 @@ int		get_next_line(const int fd, char **line)
 		if ((tmp = ft_strchr(extra[fd], '\n')) != 0)
 			return (assign_line(&extra[fd], line, tmp - extra[fd]));
 	}
-	if ((tmp = ft_strchr(extra[fd], '\n')) != 0)
+	if (!extra[fd])
+		return (0);
+	else if ((tmp = ft_strchr(extra[fd], '\n')) != 0)
 		return (assign_line(&extra[fd], line, tmp - extra[fd]));
 	else if (ft_strlen(extra[fd]) > 0)
 		return (final_line(&extra[fd], line));
-//	free(extra[fd]);
-//	extra[fd] = NULL;
+	ft_strdel(&extra[fd]);
 	return (0);
 }

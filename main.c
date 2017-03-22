@@ -221,13 +221,11 @@ static void simple_string()
 		printf("Error\n");
 }
 
-
 int		main(void)
 {
-	simple_string();
-	test_basic();
-	//printf("NEXT TEST\n");
-	simple_test();
-	//printf("\n");
+	//test_basic();
+	//simple_test();
 	test_poems();
+	simple_string();
+	return (0);
 }
