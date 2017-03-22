@@ -22,10 +22,11 @@ void	test_basic(void)
 	}
 	printf("Done.\n");
 	printf("Reading Lines...\n");
-	while (get_next_line(fd, &line) > 0)
+	while (get_next_line(fd, &line) > 0 && line_count < 20)
 	{
 		line_count++;
 		printf(ANSI_F_CYAN "%zu" ANSI_RESET "\t|%s" ANSI_F_CYAN "$\n" ANSI_RESET, line_count, line);
+		printf("Main Free\n");
 		free(line);
 	}
 	if (line_count != 12)
@@ -68,6 +69,7 @@ int				simple_test(void)
 				errors++;
 			count_lines++;
 			printf("MAIN %d = %s\n", count_lines, line);
+			printf("Main Free\n");
 			free(line);
 			if (count_lines > 50)
 				break ;
@@ -110,12 +112,14 @@ void	test_poems(void)
 		line_count++;
 		get_next_line(fd_i, &line);
 		printf(ANSI_F_CYAN "%zu" ANSI_RESET "\t|%s" ANSI_F_CYAN "$\n" ANSI_RESET, line_count, line);
+		printf("Main Free\n");
 		free(line);
 	}
 	while (get_next_line(fd_a, &line) > 0)
 	{
 		line_count++;
 		printf(ANSI_F_CYAN "%zu" ANSI_RESET "\t|%s" ANSI_F_CYAN "$\n" ANSI_RESET, line_count, line);
+		printf("Main Free\n");
 		free(line);
 	}
 	line_count++;
@@ -126,12 +130,14 @@ void	test_poems(void)
 	{
 		line_count++;
 		printf(ANSI_F_CYAN "%zu" ANSI_RESET "\t|%s" ANSI_F_CYAN "$\n" ANSI_RESET, line_count, line);
+		printf("Main Free\n");
 		free(line);
 	}
 	while (get_next_line(fd_i, &line) > 0)
 	{
 		line_count++;
 		printf(ANSI_F_CYAN "%zu" ANSI_RESET "\t|%s" ANSI_F_CYAN "$\n" ANSI_RESET, line_count, line);
+		printf("Main Free\n");
 		free(line);
 	}
 	if (line_count != 45)
@@ -149,11 +155,79 @@ void	test_poems(void)
 	}
 }
 
+static void simple_string()
+{
+	char 	*line;
+	int		out;
+	int		p[2];
+	int		fd;
+	int		gnl_ret;
+
+	out = dup(1);
+	pipe(p);
+
+	fd = 1;
+	dup2(p[1], fd);
+	write(fd, "abc\n\n", 5);
+	close(p[1]);
+	dup2(out, fd);
+
+	/* Read abc and new line */
+	gnl_ret = get_next_line(p[0], &line);
+	if (gnl_ret == 1)
+		printf("Fine1\n");
+	else
+		printf("Error\n");
+
+	if (strcmp(line, "abc") == 0)
+		printf("Fine2\n");
+	else
+		printf("Error\n");
+
+	/* Read new line */
+	gnl_ret = get_next_line(p[0], &line);
+	if (gnl_ret == 1)
+		printf("Fine3\n");
+	else
+		printf("Error\n");
+
+	if (line == NULL || *line == '\0')
+		printf("Fine4\n");
+	else
+		printf("Error\n");
+
+	/* Read again, but meet EOF */
+	gnl_ret = get_next_line(p[0], &line);
+	
+	if (gnl_ret == 0)
+		printf("Fine5\n");
+	else
+		printf("Error\n");
+
+	if (line == NULL || *line == '\0')
+		printf("Fine6\n");
+	else
+		printf("Error\n");
+
+	gnl_ret = get_next_line(p[0], &line);
+	if (gnl_ret == 0)
+		printf("Fine7\n");
+	else
+		printf("Error\n");
+
+	if (line == NULL || *line == '\0')
+		printf("Fine8\n");
+	else
+		printf("Error\n");
+}
+
+
 int		main(void)
 {
+	simple_string();
 	test_basic();
-	printf("\n");
+	//printf("NEXT TEST\n");
 	simple_test();
-	printf("\n");
+	//printf("\n");
 	test_poems();
 }
