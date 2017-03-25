@@ -6,7 +6,7 @@
 /*   By: jkalia <jkalia@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/12 19:46:18 by jkalia            #+#    #+#             */
-/*   Updated: 2017/03/22 12:58:25 by jkalia           ###   ########.fr       */
+/*   Updated: 2017/03/24 16:59:54 by jkalia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,41 +14,36 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-void	ft_join_free(char *buf, char **extra)
+void	insert_extra(char *buf, t_arr *extra)
 {
 	char	*tmp;
 
-	tmp = ft_strjoin(*extra, buf);
-	free(*extra);
-	ft_bzero(buf, BUFF_SIZE + 1);
-	*extra = tmp;
-}
-
-void	insert_extra(char *buf, char **extra)
-{
-	if (*extra == 0)
+	if (extra->ptr == 0)
 	{
-		*extra = ft_strdup(buf);
+		extra->ptr = ft_strdup(buf);
 		ft_bzero(buf, BUFF_SIZE + 1);
 		return ;
 	}
-	ft_join_free(buf, extra);
+	tmp = ft_strjoin(extra->ptr, buf);
+	free(extra->ptr);
+	ft_bzero(buf, BUFF_SIZE + 1);
+	extra->ptr = tmp;
 }
 
-int		assign_line(char **extra, char **line, size_t size)
+int		assign_line(t_arr *extra, char **line, size_t size)
 {
-	*line = ft_strndup(*extra, size);
-	*extra = ft_memmove(*extra, *extra + size + 1, ft_strlen(*extra));
+	*line = ft_strndup(extra->ptr, size);
+	extra->ptr = ft_memmove(extra->ptr, extra->ptr + size + 1, ft_strlen(extra->ptr));
 	return (1);
 }
 
-int		final_line(char **extra, char **line)
+int		final_line(t_arr *extra, char **line)
 {
 	size_t extra_len;
 
-	extra_len = ft_strlen(*extra);
-	*line = ft_strdup(*extra);
-	ft_bzero(*extra, extra_len);
+	extra_len = ft_strlen(extra->ptr);
+	*line = ft_strdup(extra->ptr);
+	ft_bzero(extra->ptr, extra_len);
 	return (1);
 }
 
@@ -56,8 +51,8 @@ int		get_next_line(const int fd, char **line)
 {
 	char			buf[BUFF_SIZE + 1];
 	char			*tmp;
-	int				b_read;
-	static char		*extra[GNL_MAX_FD];
+	ssize_t			b_read;
+	static t_arr	extra[GNL_MAX_FD];
 
 	if (fd < 0 || !line || BUFF_SIZE == 0 || fd > GNL_MAX_FD)
 		return (-1);
@@ -66,15 +61,15 @@ int		get_next_line(const int fd, char **line)
 	{
 		CHK(b_read == -1, -1);
 		insert_extra(buf, &extra[fd]);
-		if ((tmp = ft_strchr(extra[fd], '\n')) != 0)
-			return (assign_line(&extra[fd], line, tmp - extra[fd]));
+		if ((tmp = ft_strchr(extra[fd].ptr, '\n')) != 0)
+			return (assign_line(&extra[fd], line, tmp - extra[fd].ptr));
 	}
-	if (!extra[fd])
+	if (extra[fd].ptr == 0)
 		return (0);
-	else if ((tmp = ft_strchr(extra[fd], '\n')) != 0)
-		return (assign_line(&extra[fd], line, tmp - extra[fd]));
-	else if (ft_strlen(extra[fd]) > 0)
+	else if ((tmp = ft_strchr(extra[fd].ptr, '\n')) != 0)
+		return (assign_line(&extra[fd], line, tmp - extra[fd].ptr));
+	else if (ft_strlen(extra[fd].ptr) > 0)
 		return (final_line(&extra[fd], line));
-	ft_strdel(&extra[fd]);
+	ft_strdel(&extra[fd].ptr);
 	return (0);
 }
