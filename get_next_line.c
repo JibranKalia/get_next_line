@@ -6,13 +6,11 @@
 /*   By: jkalia <jkalia@student.42.us.org>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/12 19:46:18 by jkalia            #+#    #+#             */
-/*   Updated: 2017/03/22 12:58:25 by jkalia           ###   ########.fr       */
+/*   Updated: 2017/04/12 12:22:09 by jkalia           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdlib.h>
-#include <stdio.h>
 
 void	ft_join_free(char *buf, char **extra)
 {
